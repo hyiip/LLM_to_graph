@@ -1,0 +1,116 @@
+# use_rag Configuration File
+# Copy this file to settings.yaml and customize as needed
+# ============================================================
+
+# ============================================================
+# LLM Client Settings (Level 4)
+# ============================================================
+llm:
+  # Model identifier - supports OpenAI and other providers via litellm
+  # Examples: "gpt-5.2", "claude-sonnet-4-5"
+  model: "gemini-3-flash-preview"
+
+  # API key - if not set, uses OPENAI_API_KEY environment variable
+  # api_key: "sk-..."
+
+# ============================================================
+# Graph Extraction Settings (Levels 1-4)
+# ============================================================
+extract_graph:
+  # Entity types to extract from text
+  # Common types: organization, person, geo, event, product, technology
+  entity_types:
+    - organization
+    - person
+    - geo
+    - event
+
+  # Maximum gleaning iterations to find additional entities
+  # 0 = disable gleaning (single extraction only)
+  # 1 = one follow-up iteration (default)
+  # 2+ = multiple follow-up iterations
+  # -1 = unlimited gleaning until LLM says no more
+  max_gleanings: 1
+
+# ============================================================
+# Claims Extraction Settings (Levels 1-4)
+# ============================================================
+extract_claims:
+  # Whether claims extraction is enabled
+  enabled: true
+
+  # Entity specification for claims extraction
+  # Can be entity types (e.g., "organization, person")
+  # or specific entity names (e.g., "Apple Inc, Steve Jobs")
+  entity_specs: "organization, person, geo, event"
+
+  # Description of what types of claims to extract
+  # Examples:
+  # - "Any claims or facts that could be relevant to information discovery."
+  # - "Red flags or risks associated with an entity."
+  # - "Financial statements and business metrics."
+  # - "Legal issues, lawsuits, or regulatory actions."
+  description: "Any claims or facts that could be relevant to information discovery."
+
+  # Maximum gleaning iterations for claims
+  max_gleanings: 1
+
+# ============================================================
+# Output Parsing Settings (Level 3)
+# ============================================================
+parsing:
+  # Delimiters used in LLM output (should match prompt format)
+  record_delimiter: "##"
+  tuple_delimiter: "<|>"
+  completion_marker: "<|COMPLETE|>"
+
+# ============================================================
+# Custom Entity Types Examples
+# ============================================================
+# Uncomment and modify for domain-specific extraction:
+#
+# For financial analysis:
+# extract_graph:
+#   entity_types:
+#     - company
+#     - person
+#     - financial_instrument
+#     - regulatory_body
+#     - market
+#
+# For scientific research:
+# extract_graph:
+#   entity_types:
+#     - researcher
+#     - institution
+#     - publication
+#     - concept
+#     - method
+#     - dataset
+#
+# For legal documents:
+# extract_graph:
+#   entity_types:
+#     - person
+#     - organization
+#     - court
+#     - law
+#     - case
+#     - jurisdiction
+
+# ============================================================
+# Custom Claims Examples
+# ============================================================
+# Uncomment and modify for domain-specific claims:
+#
+# For due diligence:
+# extract_claims:
+#   description: "Red flags, risks, legal issues, or regulatory concerns associated with entities."
+#
+# For competitive intelligence:
+# extract_claims:
+#   description: "Market positions, competitive advantages, partnerships, and strategic moves."
+#
+# For news analysis:
+# extract_claims:
+#   description: "Factual statements about events, including dates, participants, and outcomes."

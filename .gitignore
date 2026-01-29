@@ -26,6 +26,7 @@ packages/graphrag-llm/notebooks/metrics
 packages/graphrag-llm/notebooks/cache
 
 .env
+default_settings.yaml
 build.zip
 
 .turbo

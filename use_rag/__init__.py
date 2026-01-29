@@ -35,6 +35,17 @@ from use_rag.client import LLMClient, PROVIDER_CONFIG, detect_provider
 # Extractors
 from use_rag.extractors import GraphExtractor, ClaimExtractor
 
+# Configs
+from use_rag.configs import (
+    load_config,
+    get_default_config,
+    get_llm_config,
+    get_graph_config,
+    get_claims_config,
+    export_default_settings,
+    create_extractors_from_config,
+)
+
 # Prompts (for advanced usage)
 from use_rag.prompts import (
     GRAPH_EXTRACTION_PROMPT,
@@ -70,6 +81,14 @@ __all__ = [
     # Extractors
     "GraphExtractor",
     "ClaimExtractor",
+    # Configs
+    "load_config",
+    "get_default_config",
+    "get_llm_config",
+    "get_graph_config",
+    "get_claims_config",
+    "export_default_settings",
+    "create_extractors_from_config",
     # Prompts
     "GRAPH_EXTRACTION_PROMPT",
     "GRAPH_CONTINUE_PROMPT",
