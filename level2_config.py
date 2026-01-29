@@ -29,7 +29,7 @@ from use_rag.utils.generate_prompt import (
 )
 
 # Default LLM settings
-DEFAULT_MODEL = "gpt-5.2"
+DEFAULT_MODEL = "gemini/gemini-3-flash-preview"
 DEFAULT_MAX_GLEANINGS = 1
 
 

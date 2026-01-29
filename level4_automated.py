@@ -10,12 +10,12 @@ Supports multiple LLM providers:
 
 Example:
     >>> from use_rag import LLMClient, GraphExtractor
-    >>> client = LLMClient(model="gpt-5.2")
+    >>> client = LLMClient(model="ggemini/gemini-3-flash-preview")
     >>> extractor = GraphExtractor(client)
     >>> entities, relationships = extractor.extract("Apple Inc. was founded by Steve Jobs...")
 
 Usage:
-    uv run python level4_automated.py                    # Uses default (gpt-5.2)
+    uv run python level4_automated.py                    # Uses default (gemini/gemini-3-flash-preview)
     uv run python level4_automated.py --model gpt-5.2
     uv run python level4_automated.py --model claude-sonnet-4-5
     uv run python level4_automated.py --model gemini/gemini-3-flash-preview
@@ -56,8 +56,8 @@ Examples:
     )
     parser.add_argument(
         "--model", "-m",
-        default="gpt-5.2",
-        help="Model to use (default: gpt-5.2)",
+        default="gemini/gemini-3-flash-preview",
+        help="Model to use (default: gemini/gemini-3-flash-preview)",
     )
     return parser.parse_args()
 

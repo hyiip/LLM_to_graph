@@ -77,13 +77,13 @@ class LLMClient:
 
     def __init__(
         self,
-        model: str = "gpt-5.2",
+        model: str = "gemini/gemini-3-flash-preview",
         api_key: str | None = None,
     ):
         """Initialize the LLM client.
 
         Args:
-            model: Model identifier. Defaults to "gpt-5.2".
+            model: Model identifier. Defaults to "gemini/gemini-3-flash-preview".
                    Examples: "gpt-5.2", "claude-sonnet-4-5", "gemini/gemini-3-flash-preview"
             api_key: API key. If None, auto-detects from environment based on model.
         """

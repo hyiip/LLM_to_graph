@@ -51,7 +51,7 @@ Level 4 requires API keys for your LLM provider. You can set them via environmen
    load_dotenv()  # Load .env file before using LLMClient
 
    from use_rag import LLMClient
-   client = LLMClient(model="gpt-5.2")  # Uses OPENAI_API_KEY from .env
+   client = LLMClient(model="gemini/gemini-3-flash-preview")  # Uses GEMINI_API_KEY from .env
    ```
 
 ### Option 2: Export environment variables
@@ -118,7 +118,7 @@ entities, rels = graph_extractor.extract(text)
 Example `settings.yaml`:
 ```yaml
 llm:
-  model: "gpt-5.2"
+  model: "gemini/gemini-3-flash-preview"
 
 extract_graph:
   entity_types:
@@ -305,7 +305,7 @@ from use_rag import (
 
 - **Entity types**: `["organization", "person", "geo", "event"]`
 - **Claim description**: `"Any claims or facts that could be relevant to information discovery."`
-- **Model**: `gpt-5.2`
+- **Model**: `gemini/gemini-3-flash-preview`
 - **max_gleanings**: `1`
 
 ## License
