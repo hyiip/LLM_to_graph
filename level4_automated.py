@@ -44,6 +44,7 @@ from use_rag import (
 CONFIG = DEFAULT_CONFIG_FILE  # Path to config file (auto-created if not exists)
 MODEL = None                  # Override model (None = use config file)
 EXTRACT_CLAIMS = None         # Override claims extraction (None = use config file)
+TEXT_FILE = "text/01.txt"  # Path to input text file
 # ============================================================
 
 
@@ -82,12 +83,15 @@ def get_settings():
 if __name__ == "__main__":
     settings = get_settings()
 
-    sample_text = """
-    Apple Inc. was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in
-    Cupertino, California in 1976. The company revolutionized the personal
-    computer industry with the Macintosh and later transformed the mobile
-    phone market with the iPhone in 2007. Steve Jobs passed away in 2011.
-    """
+    # Load text from file
+    text_path = Path(TEXT_FILE)
+    if not text_path.exists():
+        print(f"Error: Text file not found: {TEXT_FILE}")
+        print("\nPlease create the file or update TEXT_FILE in this script.")
+        exit(1)
+
+    sample_text = text_path.read_text(encoding="utf-8")
+    print(f"Loaded text from: {TEXT_FILE} ({len(sample_text)} chars)")
 
     print("=" * 60)
     print("LEVEL 4: AUTOMATED EXTRACTION DEMO")

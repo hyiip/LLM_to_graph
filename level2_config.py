@@ -25,6 +25,7 @@ from use_rag import (
 # USER CONFIGURATION - Edit these values
 # ============================================================
 CONFIG = DEFAULT_CONFIG_FILE  # Path to config file (auto-created if not exists)
+TEXT_FILE = "text/01.txt"  # Path to input text file
 # ============================================================
 
 
@@ -62,11 +63,15 @@ if __name__ == "__main__":
         print(f"Creating {CONFIG}...")
         export_default_settings(CONFIG)
 
-    sample_text = """
-    Apple Inc. was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in
-    Cupertino, California in 1976. The company revolutionized the personal
-    computer industry.
-    """
+    # Load text from file
+    text_path = Path(TEXT_FILE)
+    if not text_path.exists():
+        print(f"Error: Text file not found: {TEXT_FILE}")
+        print("\nPlease create the file or update TEXT_FILE in this script.")
+        exit(1)
+
+    sample_text = text_path.read_text(encoding="utf-8")
+    print(f"Loaded text from: {TEXT_FILE} ({len(sample_text)} chars)")
 
     print("=" * 60)
     print("LEVEL 2: CONFIG-BASED PROMPT GENERATION")
