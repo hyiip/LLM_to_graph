@@ -19,7 +19,63 @@ pip install pyyaml
 
 # For Level 4 (automated extraction):
 pip install litellm   # or: pip install openai
+pip install python-dotenv  # optional, for .env file support
 ```
+
+## Environment Setup
+
+Level 4 requires API keys for your LLM provider. You can set them via environment variables or use a `.env` file.
+
+### Option 1: Using .env file (recommended)
+
+1. Copy the example file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` and add your API key(s):
+   ```bash
+   # For OpenAI (gpt-4, gpt-4.1, o1-*, o3-*)
+   OPENAI_API_KEY=sk-your-key-here
+
+   # For Anthropic (claude-3-opus, claude-3-sonnet, etc.)
+   ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+   # For Google (gemini/gemini-pro, gemini-*)
+   GEMINI_API_KEY=your-key-here
+   ```
+
+3. Load the `.env` file in your script:
+   ```python
+   from dotenv import load_dotenv
+   load_dotenv()  # Load .env file before using LLMClient
+
+   from use_rag import LLMClient
+   client = LLMClient(model="gpt-4.1")  # Uses OPENAI_API_KEY from .env
+   ```
+
+### Option 2: Export environment variables
+
+```bash
+# OpenAI
+export OPENAI_API_KEY='sk-your-key-here'
+
+# Anthropic
+export ANTHROPIC_API_KEY='sk-ant-your-key-here'
+
+# Google Gemini
+export GEMINI_API_KEY='your-key-here'
+```
+
+### Supported Providers
+
+| Provider  | Model Prefixes                    | Environment Variable  |
+|-----------|-----------------------------------|----------------------|
+| OpenAI    | `gpt-*`, `o1-*`, `o3-*`          | `OPENAI_API_KEY`     |
+| Anthropic | `claude-*`                        | `ANTHROPIC_API_KEY`  |
+| Google    | `gemini/*`, `gemini-*`           | `GEMINI_API_KEY`     |
+
+The `LLMClient` automatically detects the provider from the model name and uses the appropriate API key.
 
 ## Quick Start
 
@@ -111,10 +167,15 @@ for rel in relationships:
 End-to-end extraction with LLM API, including automatic "gleaning" to find missed entities:
 
 ```python
+from dotenv import load_dotenv
+load_dotenv()  # Load API keys from .env file
+
 from use_rag import LLMClient, GraphExtractor, ClaimExtractor
 
-# Initialize client (uses OPENAI_API_KEY env var)
-client = LLMClient(model="gpt-4.1")
+# Initialize client - auto-detects provider from model name
+client = LLMClient(model="gpt-4.1")           # Uses OPENAI_API_KEY
+# client = LLMClient(model="claude-3-opus-20240229")  # Uses ANTHROPIC_API_KEY
+# client = LLMClient(model="gemini/gemini-pro")       # Uses GEMINI_API_KEY
 
 # Extract entities and relationships (with gleaning enabled by default)
 extractor = GraphExtractor(
