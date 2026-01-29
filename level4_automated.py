@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     print("\nEntities:")
     for e in entities:
-        desc = e.description[:50] + "..." if len(e.description) > 50 else e.description
+        desc = e.description[:50]
         print(f"  - {e.name} ({e.type}): {desc}")
 
     print("\nRelationships:")
