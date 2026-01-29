@@ -13,6 +13,7 @@ Usage:
     2. Run: uv run python level4_automated.py
 """
 
+import csv
 import os
 import sys
 from pathlib import Path
@@ -44,7 +45,8 @@ from use_rag import (
 CONFIG = DEFAULT_CONFIG_FILE  # Path to config file (auto-created if not exists)
 MODEL = None                  # Override model (None = use config file)
 EXTRACT_CLAIMS = None         # Override claims extraction (None = use config file)
-TEXT_FILE = "text/01.txt"  # Path to input text file
+TEXT_FILE = "text/01.txt"     # Path to input text file
+OUTPUT_DIR = "output/01/"         # Directory for CSV output files
 # ============================================================
 
 
@@ -78,6 +80,33 @@ def get_settings():
         settings["extract_claims"] = EXTRACT_CLAIMS
 
     return settings
+
+
+def export_entities_csv(entities, output_path: Path):
+    """Export entities to CSV file."""
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["name", "type", "description"])
+        for e in entities:
+            writer.writerow([e.name, e.type, e.description])
+
+
+def export_relationships_csv(relationships, output_path: Path):
+    """Export relationships to CSV file."""
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["source", "target", "description", "weight"])
+        for r in relationships:
+            writer.writerow([r.source, r.target, r.description, r.weight])
+
+
+def export_claims_csv(claims, output_path: Path):
+    """Export claims to CSV file."""
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["subject", "object", "type", "status", "start_date", "end_date", "description", "source_text"])
+        for c in claims:
+            writer.writerow([c.subject, c.object, c.type, c.status, c.start_date, c.end_date, c.description, c.source_text])
 
 
 if __name__ == "__main__":
@@ -143,9 +172,11 @@ if __name__ == "__main__":
 
     print("\nRelationships:")
     for r in relationships:
-        print(f"  - {r.source} -> {r.target} (weight={r.weight})")
+        desc = r.description
+        print(f"  - {r.source} -> {r.target}: {desc} (weight={r.weight})")
 
     # Claims extraction (if enabled)
+    claims = []
     if settings["extract_claims"]:
         print("\nExtracting claims...")
         claim_extractor = ClaimExtractor(
@@ -159,5 +190,24 @@ if __name__ == "__main__":
         print("\nClaims:")
         for c in claims:
             status_icon = "+" if c.status == "TRUE" else "?" if c.status == "SUSPECTED" else "-"
-            desc = c.description[:60] + "..." if len(c.description) > 60 else c.description
+            desc = c.description
             print(f"  [{status_icon}] {c.subject}: {desc}")
+
+    # Export to CSV
+    output_dir = Path(OUTPUT_DIR)
+    output_dir.mkdir(exist_ok=True, parents=True)
+
+    entities_file = output_dir / "entities.csv"
+    relationships_file = output_dir / "relationships.csv"
+    claims_file = output_dir / "claims.csv"
+
+    export_entities_csv(entities, entities_file)
+    export_relationships_csv(relationships, relationships_file)
+    if claims:
+        export_claims_csv(claims, claims_file)
+
+    print(f"\nExported to {OUTPUT_DIR}/:")
+    print(f"  - entities.csv ({len(entities)} entities)")
+    print(f"  - relationships.csv ({len(relationships)} relationships)")
+    if claims:
+        print(f"  - claims.csv ({len(claims)} claims)")
