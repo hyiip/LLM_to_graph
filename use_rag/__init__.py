@@ -37,6 +37,7 @@ from use_rag.extractors import GraphExtractor, ClaimExtractor
 
 # Configs
 from use_rag.configs import (
+    DEFAULT_CONFIG_FILE,
     load_config,
     get_default_config,
     get_llm_config,
@@ -82,6 +83,7 @@ __all__ = [
     "GraphExtractor",
     "ClaimExtractor",
     # Configs
+    "DEFAULT_CONFIG_FILE",
     "load_config",
     "get_default_config",
     "get_llm_config",

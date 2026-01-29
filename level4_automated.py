@@ -5,36 +5,27 @@ and claim extraction using an LLM API.
 
 Supports multiple LLM providers:
 - OpenAI: gpt-5.2 (set OPENAI_API_KEY)
-- Anthropic: claude-sonnet-4-5 claude-haiku-4-5 claude-opus-4-5 (set ANTHROPIC_API_KEY)
-- Google: gemini/gemini-3-flash-preview gemini/gemini-3-pro-preview (set GEMINI_API_KEY)
-
-Example:
-    >>> from use_rag import LLMClient, GraphExtractor
-    >>> client = LLMClient(model="gemini/gemini-3-flash-preview")
-    >>> extractor = GraphExtractor(client)
-    >>> entities, relationships = extractor.extract("Apple Inc. was founded by Steve Jobs...")
+- Anthropic: claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5 (set ANTHROPIC_API_KEY)
+- Google: gemini/gemini-3-flash-preview, gemini/gemini-3-pro-preview (set GEMINI_API_KEY)
 
 Usage:
-    uv run python level4_automated.py                    # Uses default model
-    uv run python level4_automated.py --model gpt-5.2
-    uv run python level4_automated.py --config example_settings.yaml
-    uv run python level4_automated.py --config example_settings.yaml --model claude-sonnet-4-5
+    1. Edit CONFIG, MODEL, and EXTRACT_CLAIMS below
+    2. Run: uv run python level4_automated.py
 """
 
-import argparse
 import os
 import sys
+from pathlib import Path
 
 # Load .env file if python-dotenv is installed
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    pass  # dotenv not installed, use environment variables directly
-
-from pathlib import Path
+    pass
 
 from use_rag import (
+    DEFAULT_CONFIG_FILE,
     LLMClient,
     GraphExtractor,
     ClaimExtractor,
@@ -47,64 +38,24 @@ from use_rag import (
     detect_provider,
 )
 
-DEFAULT_CONFIG_FILE = "default_settings.yaml"
+# ============================================================
+# USER CONFIGURATION - Edit these values
+# ============================================================
+CONFIG = DEFAULT_CONFIG_FILE  # Path to config file (auto-created if not exists)
+MODEL = None                  # Override model (None = use config file)
+EXTRACT_CLAIMS = None         # Override claims extraction (None = use config file)
+# ============================================================
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Automated graph extraction using LLM",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Supported providers and models:
-  OpenAI:    gpt-5.2                        (requires OPENAI_API_KEY)
-  Anthropic: claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5
-                                            (requires ANTHROPIC_API_KEY)
-  Google:    gemini/gemini-3-flash-preview, gemini/gemini-3-pro-preview
-                                            (requires GEMINI_API_KEY)
-
-Examples:
-  %(prog)s --model gpt-5.2
-  %(prog)s --config example_settings.yaml
-  %(prog)s --config example_settings.yaml --model claude-sonnet-4-5
-        """,
-    )
-    parser.add_argument(
-        "--model", "-m",
-        default=None,
-        help="Model to use (overrides config file)",
-    )
-    parser.add_argument(
-        "--config", "-c",
-        default=DEFAULT_CONFIG_FILE,
-        help=f"Path to YAML config file (default: {DEFAULT_CONFIG_FILE})",
-    )
-    parser.add_argument(
-        "--claims",
-        action="store_true",
-        default=None,
-        help="Also extract claims (default: from config or False)",
-    )
-    return parser.parse_args()
-
-
-def get_settings(args):
-    """Get settings from config file and CLI args (CLI takes precedence)."""
+def get_settings():
+    """Get settings from config file and overrides."""
     # Auto-generate config file if it doesn't exist
-    config_path = args.config
-    if not Path(config_path).exists():
-        print(f"Creating {config_path}...")
-        export_default_settings(config_path)
+    if not Path(CONFIG).exists():
+        print(f"Creating {CONFIG}...")
+        export_default_settings(CONFIG)
 
     # Load config
-    try:
-        config = load_config(config_path)
-    except FileNotFoundError:
-        print(f"Error: Config file not found: {config_path}")
-        sys.exit(1)
-    except ImportError as e:
-        print(f"Error: {e}")
-        sys.exit(1)
-
+    config = load_config(CONFIG)
     llm_cfg = get_llm_config(config)
     graph_cfg = get_graph_config(config)
     claims_cfg = get_claims_config(config)
@@ -119,18 +70,17 @@ def get_settings(args):
         "claim_max_gleanings": claims_cfg["max_gleanings"],
     }
 
-    # CLI args override config
-    if args.model:
-        settings["model"] = args.model
-    if args.claims is not None:
-        settings["extract_claims"] = args.claims
+    # Apply overrides
+    if MODEL is not None:
+        settings["model"] = MODEL
+    if EXTRACT_CLAIMS is not None:
+        settings["extract_claims"] = EXTRACT_CLAIMS
 
     return settings
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    settings = get_settings(args)
+    settings = get_settings()
 
     sample_text = """
     Apple Inc. was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in
@@ -142,7 +92,7 @@ if __name__ == "__main__":
     print("=" * 60)
     print("LEVEL 4: AUTOMATED EXTRACTION DEMO")
     print("=" * 60)
-    print(f"Config: {args.config}")
+    print(f"Config: {CONFIG}")
 
     # Check for API key based on detected provider
     model = settings["model"]
@@ -165,7 +115,7 @@ if __name__ == "__main__":
         print("  OpenAI:    export OPENAI_API_KEY='your-key'")
         print("  Anthropic: export ANTHROPIC_API_KEY='your-key'")
         print("  Google:    export GEMINI_API_KEY='your-key'")
-        print(f"\nThen run: uv run python level4_automated.py --model {model}")
+        print("\nThen run: uv run python level4_automated.py")
         sys.exit(0)
 
     print(f"\nInitializing LLM client with model: {model}")
@@ -184,7 +134,8 @@ if __name__ == "__main__":
 
     print("\nEntities:")
     for e in entities:
-        print(f"  - {e.name} ({e.type}): {e.description[:50]}..." if len(e.description) > 50 else f"  - {e.name} ({e.type}): {e.description}")
+        desc = e.description[:50] + "..." if len(e.description) > 50 else e.description
+        print(f"  - {e.name} ({e.type}): {desc}")
 
     print("\nRelationships:")
     for r in relationships:
@@ -203,5 +154,6 @@ if __name__ == "__main__":
 
         print("\nClaims:")
         for c in claims:
-            status_icon = "✓" if c.status == "TRUE" else "?" if c.status == "SUSPECTED" else "✗"
-            print(f"  [{status_icon}] {c.subject}: {c.description[:60]}..." if len(c.description) > 60 else f"  [{status_icon}] {c.subject}: {c.description}")
+            status_icon = "+" if c.status == "TRUE" else "?" if c.status == "SUSPECTED" else "-"
+            desc = c.description[:60] + "..." if len(c.description) > 60 else c.description
+            print(f"  [{status_icon}] {c.subject}: {desc}")

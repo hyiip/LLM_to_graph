@@ -18,7 +18,8 @@ from use_rag.utils.generate_prompt import (
     DEFAULT_CLAIM_DESCRIPTION,
 )
 
-# Default LLM settings
+# Default settings
+DEFAULT_CONFIG_FILE = "default_settings.yaml"
 DEFAULT_MODEL = "gemini/gemini-3-flash-preview"
 DEFAULT_MAX_GLEANINGS = 1
 
