@@ -35,13 +35,13 @@ Level 4 requires API keys for your LLM provider. You can set them via environmen
 
 2. Edit `.env` and add your API key(s):
    ```bash
-   # For OpenAI (gpt-4, gpt-4.1, o1-*, o3-*)
+   # For OpenAI (gpt-5.2)
    OPENAI_API_KEY=sk-your-key-here
 
-   # For Anthropic (claude-3-opus, claude-3-sonnet, etc.)
+   # For Anthropic (claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5)
    ANTHROPIC_API_KEY=sk-ant-your-key-here
 
-   # For Google (gemini/gemini-pro, gemini-*)
+   # For Google (gemini/gemini-3-flash-preview, gemini/gemini-3-pro-preview)
    GEMINI_API_KEY=your-key-here
    ```
 
@@ -51,7 +51,7 @@ Level 4 requires API keys for your LLM provider. You can set them via environmen
    load_dotenv()  # Load .env file before using LLMClient
 
    from use_rag import LLMClient
-   client = LLMClient(model="gpt-4.1")  # Uses OPENAI_API_KEY from .env
+   client = LLMClient(model="gpt-5.2")  # Uses OPENAI_API_KEY from .env
    ```
 
 ### Option 2: Export environment variables
@@ -69,11 +69,11 @@ export GEMINI_API_KEY='your-key-here'
 
 ### Supported Providers
 
-| Provider  | Model Prefixes                    | Environment Variable  |
-|-----------|-----------------------------------|----------------------|
-| OpenAI    | `gpt-*`, `o1-*`, `o3-*`          | `OPENAI_API_KEY`     |
-| Anthropic | `claude-*`                        | `ANTHROPIC_API_KEY`  |
-| Google    | `gemini/*`, `gemini-*`           | `GEMINI_API_KEY`     |
+| Provider  | Models                                                      | Environment Variable  |
+|-----------|-------------------------------------------------------------|----------------------|
+| OpenAI    | `gpt-5.2`                                                   | `OPENAI_API_KEY`     |
+| Anthropic | `claude-sonnet-4-5`, `claude-haiku-4-5`, `claude-opus-4-5`  | `ANTHROPIC_API_KEY`  |
+| Google    | `gemini/gemini-3-flash-preview`, `gemini/gemini-3-pro-preview` | `GEMINI_API_KEY`     |
 
 The `LLMClient` automatically detects the provider from the model name and uses the appropriate API key.
 
@@ -118,7 +118,7 @@ entities, rels = graph_extractor.extract(text)
 Example `settings.yaml`:
 ```yaml
 llm:
-  model: "gpt-4.1"
+  model: "gpt-5.2"
 
 extract_graph:
   entity_types:
@@ -173,9 +173,9 @@ load_dotenv()  # Load API keys from .env file
 from use_rag import LLMClient, GraphExtractor, ClaimExtractor
 
 # Initialize client - auto-detects provider from model name
-client = LLMClient(model="gpt-4.1")           # Uses OPENAI_API_KEY
-# client = LLMClient(model="claude-3-opus-20240229")  # Uses ANTHROPIC_API_KEY
-# client = LLMClient(model="gemini/gemini-pro")       # Uses GEMINI_API_KEY
+client = LLMClient(model="gpt-5.2")                        # Uses OPENAI_API_KEY
+# client = LLMClient(model="claude-sonnet-4-5")            # Uses ANTHROPIC_API_KEY
+# client = LLMClient(model="gemini/gemini-3-flash-preview") # Uses GEMINI_API_KEY
 
 # Extract entities and relationships (with gleaning enabled by default)
 extractor = GraphExtractor(
@@ -305,7 +305,7 @@ from use_rag import (
 
 - **Entity types**: `["organization", "person", "geo", "event"]`
 - **Claim description**: `"Any claims or facts that could be relevant to information discovery."`
-- **Model**: `gpt-4.1`
+- **Model**: `gpt-5.2`
 - **max_gleanings**: `1`
 
 ## License

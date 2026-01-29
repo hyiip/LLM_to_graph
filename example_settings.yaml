@@ -7,8 +7,8 @@
 # ============================================================
 llm:
   # Model identifier - supports OpenAI and other providers via litellm
-  # Examples: "gpt-4.1", "gpt-4o", "gpt-3.5-turbo", "claude-3-opus-20240229"
-  model: "gpt-4.1"
+  # Examples: "gpt-5.2", "claude-sonnet-4-5"
+  model: "gemini-3-flash-preview"
 
   # API key - if not set, uses OPENAI_API_KEY environment variable
   # api_key: "sk-..."

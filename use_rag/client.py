@@ -65,26 +65,26 @@ class LLMClient:
     """Wrapper for LLM API calls using litellm or openai.
 
     This client supports multiple LLM providers through litellm:
-    - OpenAI: gpt-4, gpt-4.1, o1-*, o3-* (uses OPENAI_API_KEY)
-    - Anthropic: claude-3-opus, claude-3-sonnet, etc. (uses ANTHROPIC_API_KEY)
-    - Google: gemini/gemini-pro, gemini-* (uses GEMINI_API_KEY)
+    - OpenAI: gpt-5.2 (uses OPENAI_API_KEY)
+    - Anthropic: claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5 (uses ANTHROPIC_API_KEY)
+    - Google: gemini/gemini-3-flash-preview, gemini/gemini-3-pro-preview (uses GEMINI_API_KEY)
 
     Attributes:
-        model: The model identifier (e.g., "gpt-4.1", "claude-3-opus-20240229").
+        model: The model identifier (e.g., "gpt-5.2", "claude-sonnet-4-5").
         api_key: The API key for authentication.
         provider: The detected provider name.
     """
 
     def __init__(
         self,
-        model: str = "gpt-4.1",
+        model: str = "gpt-5.2",
         api_key: str | None = None,
     ):
         """Initialize the LLM client.
 
         Args:
-            model: Model identifier. Defaults to "gpt-4.1".
-                   Examples: "gpt-4.1", "claude-3-opus-20240229", "gemini/gemini-pro"
+            model: Model identifier. Defaults to "gpt-5.2".
+                   Examples: "gpt-5.2", "claude-sonnet-4-5", "gemini/gemini-3-flash-preview"
             api_key: API key. If None, auto-detects from environment based on model.
         """
         self.model = model

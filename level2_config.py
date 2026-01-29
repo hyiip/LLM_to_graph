@@ -29,7 +29,7 @@ from use_rag.utils.generate_prompt import (
 )
 
 # Default LLM settings
-DEFAULT_MODEL = "gpt-4.1"
+DEFAULT_MODEL = "gpt-5.2"
 DEFAULT_MAX_GLEANINGS = 1
 
 

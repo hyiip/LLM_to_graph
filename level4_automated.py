@@ -4,21 +4,21 @@ This script demonstrates fully automated entity, relationship,
 and claim extraction using an LLM API.
 
 Supports multiple LLM providers:
-- OpenAI: gpt-4, gpt-4.1 (set OPENAI_API_KEY)
-- Anthropic: claude-3-opus-20240229, claude-3-sonnet-20240229 (set ANTHROPIC_API_KEY)
-- Google: gemini/gemini-pro (set GEMINI_API_KEY)
+- OpenAI: gpt-5.2 (set OPENAI_API_KEY)
+- Anthropic: claude-sonnet-4-5 claude-haiku-4-5 claude-opus-4-5 (set ANTHROPIC_API_KEY)
+- Google: gemini/gemini-3-flash-preview gemini/gemini-3-pro-preview (set GEMINI_API_KEY)
 
 Example:
     >>> from use_rag import LLMClient, GraphExtractor
-    >>> client = LLMClient(model="gpt-4.1")
+    >>> client = LLMClient(model="gpt-5.2")
     >>> extractor = GraphExtractor(client)
     >>> entities, relationships = extractor.extract("Apple Inc. was founded by Steve Jobs...")
 
 Usage:
-    uv run python level4_automated.py                    # Uses default (gpt-4.1)
-    uv run python level4_automated.py --model gpt-4.1
-    uv run python level4_automated.py --model claude-3-opus-20240229
-    uv run python level4_automated.py --model gemini/gemini-pro
+    uv run python level4_automated.py                    # Uses default (gpt-5.2)
+    uv run python level4_automated.py --model gpt-5.2
+    uv run python level4_automated.py --model claude-sonnet-4-5
+    uv run python level4_automated.py --model gemini/gemini-3-flash-preview
 """
 
 import argparse
@@ -42,20 +42,22 @@ def parse_args():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Supported providers and models:
-  OpenAI:    gpt-4, gpt-4.1, o1-*, o3-*     (requires OPENAI_API_KEY)
-  Anthropic: claude-3-opus-*, claude-3-*    (requires ANTHROPIC_API_KEY)
-  Google:    gemini/gemini-pro, gemini-*    (requires GEMINI_API_KEY)
+  OpenAI:    gpt-5.2                        (requires OPENAI_API_KEY)
+  Anthropic: claude-sonnet-4-5, claude-haiku-4-5, claude-opus-4-5
+                                            (requires ANTHROPIC_API_KEY)
+  Google:    gemini/gemini-3-flash-preview, gemini/gemini-3-pro-preview
+                                            (requires GEMINI_API_KEY)
 
 Examples:
-  %(prog)s --model gpt-4.1
-  %(prog)s --model claude-3-opus-20240229
-  %(prog)s --model gemini/gemini-pro
+  %(prog)s --model gpt-5.2
+  %(prog)s --model claude-sonnet-4-5
+  %(prog)s --model gemini/gemini-3-flash-preview
         """,
     )
     parser.add_argument(
         "--model", "-m",
-        default="gpt-4.1",
-        help="Model to use (default: gpt-4.1)",
+        default="gpt-5.2",
+        help="Model to use (default: gpt-5.2)",
     )
     return parser.parse_args()
 
